@@ -43,6 +43,7 @@ export async function evaluateGeneration({
 
   // 4) Create the next generation
   if (args.isAtLocalMinimum) {
+    console.log("---- Is at local minumum ----");
     networks = spawnGeneration(trainData.network, population_size, () =>
       generateRandomCoefficients(coefficientCount),
     );

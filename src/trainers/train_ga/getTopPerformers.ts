@@ -1,5 +1,6 @@
+import { BinaryNetwork } from "../../network";
+import { getNetworkError } from "../../networkEvaluate";
 import { TrainData } from "../../types";
-import { BinaryNetwork, getNetworkError } from "../../network";
 
 interface Args {
   networks: BinaryNetwork[];

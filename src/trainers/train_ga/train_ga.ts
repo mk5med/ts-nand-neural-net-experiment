@@ -3,7 +3,6 @@ import { TrainData } from "../../types";
 import { generateRandomCoefficients } from "./coefficients";
 import { evaluateGeneration } from "./evaluateGeneration";
 import { spawnGeneration } from "./spawnGeneration";
-import sha256 from "sha256";
 
 interface TrainArgs {
   trainData: TrainData;
@@ -30,7 +29,7 @@ export async function train({
   );
 
   let topPerformers: BinaryNetwork[] = [];
-  let bestError = 1;
+  let bestError = 1e8;
   let count_generations = 0;
   let errorHasNotImprovedCount = 0;
 
@@ -53,11 +52,6 @@ export async function train({
     networks = vals.newNetworks;
     topPerformers = vals.topPerformers;
 
-    // Exit if the error of the model is close to the accepted error rate
-    if (vals.newError <= error_epsilon) {
-      break;
-    }
-
     // Reset the count if it has reached the limit
     if (errorHasNotImprovedCount == 10) {
       errorHasNotImprovedCount = 0;
@@ -73,13 +67,18 @@ export async function train({
       bestError = vals.newError;
     }
 
+    // Exit if the error of the model is close to the accepted error rate
+    if (vals.newError <= error_epsilon) {
+      break;
+    }
+
     count_generations++;
   } while (
     maxGenerations == -1 ||
     (maxGenerations != -1 && count_generations < maxGenerations)
   );
 
-  console.log("Solution found", bestError, topPerformers.length);
+  console.log(`Solution found. Best error: ${bestError}`);
 
   trainData.network.setCoefficients(topPerformers[0].coefficients);
 }

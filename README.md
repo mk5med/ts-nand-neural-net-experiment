@@ -1,4 +1,5 @@
 # ts-nand-neural-net-experiment
+
 Experiments to make a neural net with NAND gates.
 
 Universal logic primitives:
@@ -24,11 +25,13 @@ Layers: 0, 1, 2, 3
 ```
 
 ## Getting started
+
 1. Install `yarn` with `npm i -g yarn`.
 2. Install dependencies with `yarn --frozenLockfile`.
 3. Run `yarn start` to run the neural net training.
 4. Run `yarn test` to run tests with vitest.
 
 ## Training
+
 The training is currently done with a [genetic algorithm](https://en.wikipedia.org/wiki/Genetic_algorithm) that generates coefficients and tries to find locally optimal solutions.
 The top _n_ networks share their common coefficients with the next generation of networks and the loop continues until the calculated error passes a developer-specified threshold.

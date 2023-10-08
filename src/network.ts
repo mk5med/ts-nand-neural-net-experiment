@@ -1,9 +1,8 @@
-import { BinaryNode, InputNode, NANDNode, OutputNode } from "./node";
-import { TestData } from "./types";
 import { v4 } from "uuid";
+import { BinaryNode, InputNode, NANDNode, OutputNode } from "./node";
 
 const DEBUG_VERBOSE = true;
-const log = (...data: any[]) => {
+export const log = (...data: any[]) => {
   if (DEBUG_VERBOSE) console.debug(...data);
 };
 export type NodeCoefficient = -1 | 0 | 1;
@@ -32,7 +31,7 @@ export class BinaryNetwork {
 
     let index = this.Layers.push([]) - 1;
     this.OutputNodes = this.Layers[index];
-    this.initializeOutputLayers(outputNodesCount, index);
+    this.initializeOutputLayer(outputNodesCount, index);
 
     if (coefficients.length != 0) {
       this.setCoefficients(coefficients);
@@ -46,20 +45,28 @@ export class BinaryNetwork {
       nodesPerHiddenLayerCount * outputNodesCount;
   }
 
+  /**
+   * Initialises the coefficients array
+   * @param hiddenLayersCount
+   * @param coefficientValue
+   */
   private initializeCoefficients(
     hiddenLayersCount: number,
     coefficientValue: -1 | 0 | 1,
   ) {
+    // For all layers
     for (
       let layerIndex = 1;
       layerIndex < 1 + hiddenLayersCount + 1;
       layerIndex++
     ) {
+      // For all nodes
       for (
         let nodeIndex = 0;
         nodeIndex < this.Layers[layerIndex].length;
         nodeIndex++
       ) {
+        // For all node connections from the previous layer
         for (
           let prevLayerNodeIndex = 0;
           prevLayerNodeIndex < this.Layers[layerIndex - 1].length;
@@ -75,12 +82,22 @@ export class BinaryNetwork {
     }
   }
 
-  private initializeOutputLayers(outputNodesCount: number, index: number) {
+  /**
+   * Initialises the output layer
+   * @param outputNodesCount
+   * @param index
+   */
+  private initializeOutputLayer(outputNodesCount: number, index: number) {
     for (let i = 0; i < outputNodesCount; i++) {
       this.Layers[index].push(new OutputNode());
     }
   }
 
+  /**
+   * Initialises the hidden layers
+   * @param hiddenLayersCount
+   * @param nodesPerHiddenLayerCount
+   */
   private initializeHiddenLayers(
     hiddenLayersCount: number,
     nodesPerHiddenLayerCount: number,
@@ -95,13 +112,24 @@ export class BinaryNetwork {
     }
   }
 
+  /**
+   * Initialises the input nodes
+   * @param inputNodesCount
+   */
   private initializeInputNodes(inputNodesCount: number) {
     for (let i = 0; i < inputNodesCount; i++) {
       this.Layers[0].push(new InputNode(false));
     }
   }
 
+  /**
+   * Evaluates the network from a starting layer
+   * If the `startLayer` is not specified this will evaluate from the start of the network
+   * @param startLayer The layer to start at. Defaults to 1
+   * @returns
+   */
   evaluateNetwork(startLayer = 1) {
+    //// Check the startLayer is in bounds
     if (startLayer <= 0) {
       throw new Error("Start layers less than 1 are unsupported.");
     }
@@ -118,13 +146,10 @@ export class BinaryNetwork {
       layerIndex < this.Layers.length;
       layerIndex++
     ) {
+      // Create a reference to the layer
       const layer = this.Layers[layerIndex];
       // Iterate through all nodes on each layer
-      for (
-        let nodeIndex = 0;
-        nodeIndex < this.Layers[layerIndex].length;
-        nodeIndex++
-      ) {
+      for (let nodeIndex = 0; nodeIndex < layer.length; nodeIndex++) {
         const previousLayer = this.Layers[layerIndex - 1];
         const currentNode = layer[nodeIndex];
         currentNode.evaluate(previousLayer);
@@ -147,6 +172,10 @@ export class BinaryNetwork {
     }
   }
 
+  /**
+   * Set the coefficients of the network for each node
+   * @param coefficients
+   */
   setCoefficients(coefficients: NodeCoefficient[]) {
     let count = 0;
     this.coefficients = coefficients;
@@ -177,71 +206,4 @@ export class BinaryNetwork {
   toString() {
     return this.coefficients.join("-");
   }
-}
-
-export function networkError(testData: TestData[], network: BinaryNetwork) {
-  let score = 0;
-  // The maximum score is: maxScore of one test * count of all tests
-  // The max score in each test is identical as they have the same size
-  let maxScore = testData[0][1].length * testData.length;
-
-  // For each test...
-  for (let testIndex = 0; testIndex < maxScore; testIndex++) {
-    const test = testData[testIndex];
-    let result = networkEvaluateInput(network, test);
-
-    for (let resultIndex = 0; resultIndex < test[1].length; resultIndex++) {
-      score += Number(result[resultIndex] == test[1][resultIndex]);
-    }
-  }
-  // console.log(score, maxScore)
-  return fitnessScore(score, maxScore);
-}
-
-/**
- * Evaluate a network when given test data
- * @param network The network to evaluate
- * @param testData The test data to use
- * @returns An array representing the result of the output nodes
- */
-function networkEvaluateInput(network: BinaryNetwork, testData: boolean[][]) {
-  // Set the inputs
-  network.setInputs(testData[0]);
-  network.evaluateNetwork();
-
-  // Collect the outputs
-  let result = network.OutputNodes.map((node) => node.value);
-  return result;
-}
-
-export function networkTest(outputMap: boolean[][][], network: BinaryNetwork) {
-  let score = 0;
-  let maxScore = outputMap[0][1].length * outputMap.length;
-
-  for (let testIndex = 0; testIndex < maxScore; testIndex++) {
-    network.setInputs(outputMap[testIndex][0]);
-    network.evaluateNetwork();
-    let result = network.OutputNodes.map((node) => node.value);
-
-    for (let i = 0; i < outputMap[testIndex][1].length; i++) {
-      log(
-        `\t([${outputMap[testIndex][0]}] = ${outputMap[testIndex][1][i]}) => ${result[i]}`,
-      );
-      score += result[i] == outputMap[testIndex][1][i] ? 1 : 0;
-    }
-  }
-  return fitnessScore(score, maxScore);
-}
-
-export function getNetworkError(
-  network: BinaryNetwork,
-  data: TestData[],
-  verbose = false,
-) {
-  if (verbose) return networkTest(data, network);
-  return networkError(data, network);
-}
-
-function fitnessScore(score: number, maxScore: number) {
-  return 1 - score / maxScore;
 }
