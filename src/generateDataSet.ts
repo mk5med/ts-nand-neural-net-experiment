@@ -1,26 +1,53 @@
 import * as fs from "fs";
-import { generateRandomImage } from "./helpers/imageGeneration";
+import {
+  generateBlankImage,
+  generateRandomImage,
+} from "./helpers/imageGeneration";
 import { TestData } from "./types";
 
 export function generateDataSet(width: number, height: number) {
   let arr: TestData[] = [];
-  // Iterate to create a dataset of images
-  for (let i = 0; i < 20000; i++) {
-    let input = generateRandomImage(width, height);
-    let val = input[0];
 
-    // Check that the first half of the image is filled
-    for (let i = 0; i < (width * height) / 2; i++) {
-      val = val && input[i];
-    }
-
-    // Check that the element immediately after the half is empty
-    val = val && !input[(width * height) / 2];
-
-    // Append the test to the dataset
-    arr.push([input, [val]]);
+  for (let i = 0; i < 10; i++) {
+    arr.push([generateRandomImage(width, height), 0]);
   }
+
+  // Check that the element immediately after the half is empty
+  arr.push([generateHalfFilledImage(width, height, 0.5), 1]);
+  for (let i = 0; i < 0.5; i += 0.01) {
+    arr.push([generateHalfFilledImage(width, height, i), i]);
+  }
+
   return arr;
+}
+
+function generateHalfFilledImage(
+  width: number,
+  height: number,
+  fillFactor: number,
+) {
+  let input = generateBlankImage(width, height);
+
+  // Check that the first half of the image is filled
+  for (let i = 0; i < Math.floor(width * height * fillFactor); i++) {
+    input[i] = true;
+  }
+  return input;
+}
+
+function correctDataset(width: number, height: number) {
+  let input = generateBlankImage(width, height);
+  let val = true;
+
+  // Check that the first half of the image is filled
+  for (let i = 0; i < (width * height) / 2; i++) {
+    input[i] = true;
+    val = val && input[i];
+  }
+
+  // Check that the element immediately after the half is empty
+  val = val && !input[(width * height) / 2];
+  return { input, val };
 }
 
 export async function loadDataset(

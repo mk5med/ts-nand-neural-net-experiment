@@ -12,37 +12,37 @@ export function networkError(testData: TestData[], network: BinaryNetwork) {
   let score = 0;
   // The maximum score is: maxScore of one test * count of all tests
   // The max score in each test is identical as they have the same size
-  const tests = testData[0][1].length * testData.length;
+  const tests = testData.length;
   const maxScore = tests;
 
   // For each test...
   for (let testIndex = 0; testIndex < tests; testIndex++) {
     const test = testData[testIndex];
     let result = networkEvaluateInput(network, test);
-    score += evaluateTest(test, result);
+    score += evaluateTest(test, result[0]);
   }
 
   // console.log(score, maxScore)
   return fitnessScore(score, maxScore);
 }
 
-function evaluateTest(test: TestData, result: boolean[]) {
+function evaluateTest(test: TestData, result: boolean) {
   let score = 0;
-  const testResults = test[1];
-
-  for (
-    let testResultIndex = 0;
-    testResultIndex < testResults.length;
-    testResultIndex++
-  ) {
-    // If the result of the network matches the result of the test
-    if (result[testResultIndex] == testResults[testResultIndex]) {
-      score -= 0;
-    } else {
-      // Decrease the networks score for failing tests
-      score += 100000000;
-    }
+  let proximity = test[1];
+  // The test has a score of zero
+  if (proximity === 0 && !result) {
+    return 0;
   }
+
+  // The test has a proximity scale, but the result was false
+  if (0 < proximity && !result) {
+    // Set the proximity to zero
+    proximity = 0;
+  }
+
+  // The score is weighted by the proximity
+  score += 10000 * (1 - proximity);
+
   return score;
 }
 
@@ -52,7 +52,7 @@ function evaluateTest(test: TestData, result: boolean[]) {
  * @param testData The test data to use
  * @returns An array representing the result of the output nodes
  */
-function networkEvaluateInput(network: BinaryNetwork, testData: boolean[][]) {
+function networkEvaluateInput(network: BinaryNetwork, testData: TestData) {
   // Set the inputs
   network.setInputs(testData[0]);
   network.evaluateNetwork();

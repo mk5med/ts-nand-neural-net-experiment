@@ -2,9 +2,9 @@ import { rval } from "./math";
 
 // Suppose a 16x16 black and white photo
 export function generateBlankImage(
-  initial: boolean[] = [],
   w: number,
   h: number,
+  initial: boolean[] = [],
 ) {
   let arr = [];
   for (let i = 0; i < w * h; i++)

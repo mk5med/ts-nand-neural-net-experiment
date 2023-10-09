@@ -1,8 +1,9 @@
 import { NodeCoefficient } from "../../network";
 
 /// This involves creating many generations of networks
-const coefficients: NodeCoefficient[] = [-1, 0, 1];
-const randomCoefficient = () => coefficients[Math.floor(Math.random() * 3)];
+const coefficients: NodeCoefficient[] = [0, 1];
+const randomCoefficient = () =>
+  coefficients[Math.floor(Math.random() * coefficients.length)];
 
 export function generateRandomCoefficients(length: number) {
   let arr: NodeCoefficient[] = [];

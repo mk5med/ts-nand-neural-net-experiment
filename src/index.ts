@@ -6,17 +6,16 @@ const WIDTH = 14;
 const HEIGHT = 14;
 
 async function main() {
-  const data = await loadDataset(WIDTH, HEIGHT, "np_dataset.txt");
+  const testData = await loadDataset(WIDTH, HEIGHT, "np_dataset.txt");
 
-  let network: BinaryNetwork = new BinaryNetwork(WIDTH * HEIGHT, 1, 1, 1);
+  let network: BinaryNetwork = new BinaryNetwork(WIDTH * HEIGHT, 1, 2, 1);
 
   await train_genetic_algorithm({
-    trainData: { network, data: data.slice(0, Math.floor(data.length / 2)) },
+    trainData: { network, data: testData },
     population_size: 100,
     error_epsilon: 0.0617,
+    // maxGenerations: 100
   });
-
-  printNetwork(network);
 
   // Save the network to json
   fsPromises.writeFile("np_network.json", JSON.stringify(network));
@@ -24,11 +23,17 @@ async function main() {
   /**
    * Final check
    */
-  for (let [input, result] of data) {
+  for (let [input, result] of testData) {
     network.setInputs(input);
     network.evaluateNetwork();
     const _result = network.OutputNodes[0].value;
-    console.assert(result[0] === _result, `Expected ${result}. Got ${_result}`);
+    const resultToBool = result > 0;
+    console.assert(
+      resultToBool === _result,
+      `Expected ${resultToBool}. Got ${_result}. Input: ${JSON.stringify(
+        input,
+      )}`,
+    );
   }
 }
 main();

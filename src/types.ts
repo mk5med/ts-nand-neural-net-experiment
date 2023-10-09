@@ -1,6 +1,6 @@
 import { BinaryNetwork } from "./network";
 
-export type TestData = [input: boolean[], result: boolean[]];
+export type TestData = [input: boolean[], proximity: number];
 
 export interface TrainData {
   network: BinaryNetwork;

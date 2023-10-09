@@ -1,6 +1,6 @@
 import { BinaryNetwork } from "../../network";
 import { TrainData } from "../../types";
-import { generateRandomCoefficients } from "./coefficients";
+import { generateRandomCoefficients } from "./generateCoefficients";
 import { createNextGeneration } from "./createNextGeneration";
 import { getTopPerformers } from "./getTopPerformers";
 import { spawnGeneration } from "./spawnGeneration";
@@ -12,14 +12,12 @@ interface EvaluateGenerationArgs {
   coefficientCount: number;
 
   networks: BinaryNetwork[];
-  previousBestError: number;
   isAtLocalMinimum: boolean;
 }
 export async function evaluateGeneration({
   networks,
   error_epsilon,
   trainData,
-  previousBestError,
   population_size,
   coefficientCount,
   ...args

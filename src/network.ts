@@ -8,7 +8,7 @@ const DEBUG_VERBOSE = true;
 export const log = (...data: any[]) => {
   if (DEBUG_VERBOSE) console.debug(...data);
 };
-export type NodeCoefficient = -1 | 0 | 1;
+export type NodeCoefficient = 0 | 1;
 export class BinaryNetwork {
   public readonly Layers: BinaryNode[][] = [];
   public readonly InputNodes: InputNode[] = [];
@@ -55,7 +55,7 @@ export class BinaryNetwork {
    */
   private initializeCoefficients(
     hiddenLayersCount: number,
-    coefficientValue: -1 | 0 | 1,
+    coefficientValue: NodeCoefficient,
   ) {
     // For all layers
     for (
