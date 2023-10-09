@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { InputNode, OutputNode } from "../node";
+import { InputNode } from "../nodes/input-node";
+import { OutputNode } from "../nodes/output-node";
 
 function can_create() {
   new OutputNode();
