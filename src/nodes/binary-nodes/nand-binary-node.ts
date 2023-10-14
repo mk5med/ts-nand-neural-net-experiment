@@ -1,4 +1,4 @@
-import { BinaryNode, Node_Type } from "./node";
+import { BinaryNode, Node_Type } from "./binary-node";
 
 export class NANDNode extends BinaryNode {
   constructor() {

@@ -1,8 +1,8 @@
 import { v4 } from "uuid";
-import { BinaryNode } from "./nodes/node";
-import { InputNode } from "./nodes/input-node";
-import { OutputNode } from "./nodes/output-node";
-import { NANDNode } from "./nodes/nand-node";
+import { BinaryNode } from "./nodes/binary-nodes/binary-node";
+import { InputNode } from "./nodes/binary-nodes/input-binary-node";
+import { OutputNode } from "./nodes/binary-nodes/output-binary-node";
+import { NANDNode } from "./nodes/binary-nodes/nand-binary-node";
 
 const DEBUG_VERBOSE = true;
 export const log = (...data: any[]) => {

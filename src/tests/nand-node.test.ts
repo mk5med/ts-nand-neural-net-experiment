@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { InputNode } from "../nodes/input-node";
-import { NANDNode } from "../nodes/nand-node";
+import { InputNode } from "../nodes/binary-nodes/input-binary-node";
+import { NANDNode } from "../nodes/binary-nodes/nand-binary-node";
 
 function NANDNode_can_create() {
   let node = new NANDNode();
