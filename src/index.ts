@@ -2,17 +2,17 @@ import { promises as fsPromises } from "fs";
 import { loadDataset } from "./generateDataSet";
 import { BinaryNetwork } from "./network";
 import { train_genetic_algorithm } from "./trainers";
-const WIDTH = 14;
-const HEIGHT = 14;
+const WIDTH = 2;
+const HEIGHT = 2;
 
 async function main() {
   const testData = await loadDataset(WIDTH, HEIGHT, "np_dataset.txt");
 
-  let network: BinaryNetwork = new BinaryNetwork(WIDTH * HEIGHT, 3, 3, 1);
+  let network: BinaryNetwork = new BinaryNetwork(WIDTH * HEIGHT, 2, 1, 1);
 
   await train_genetic_algorithm({
     trainData: { network, data: testData },
-    population_size: 200,
+    population_size: 5,
     error_epsilon: 0.0617,
     // maxGenerations: 100
   });

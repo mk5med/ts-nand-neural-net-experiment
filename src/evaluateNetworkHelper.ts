@@ -8,7 +8,7 @@ import { TestData } from "./types";
  * @returns
  */
 
-export function evaluateNetwork(testData: TestData[], network: BinaryNetwork) {
+export function evaluateNetwork(network: BinaryNetwork, testData: TestData[]) {
   let score = 0;
   // The maximum score is: maxScore of one test * count of all tests
   // The max score in each test is identical as they have the same size
@@ -70,7 +70,7 @@ export function evaluateNetworkWrapper(
   data: TestData[],
   verbose = false,
 ) {
-  return evaluateNetwork(data, network);
+  return evaluateNetwork(network, data);
 }
 function fitnessScore(score: number, maxScore: number) {
   return score;
