@@ -8,11 +8,11 @@ const HEIGHT = 14;
 async function main() {
   const testData = await loadDataset(WIDTH, HEIGHT, "np_dataset.txt");
 
-  let network: BinaryNetwork = new BinaryNetwork(WIDTH * HEIGHT, 1, 2, 1);
+  let network: BinaryNetwork = new BinaryNetwork(WIDTH * HEIGHT, 3, 3, 1);
 
   await train_genetic_algorithm({
     trainData: { network, data: testData },
-    population_size: 100,
+    population_size: 200,
     error_epsilon: 0.0617,
     // maxGenerations: 100
   });
@@ -25,7 +25,7 @@ async function main() {
    */
   for (let [input, result] of testData) {
     network.setInputs(input);
-    network.evaluateNetwork();
+    network.run();
     const _result = network.OutputNodes[0].value;
     const resultToBool = result > 0;
     console.assert(

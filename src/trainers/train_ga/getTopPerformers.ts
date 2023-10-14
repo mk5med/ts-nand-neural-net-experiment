@@ -1,5 +1,5 @@
 import { BinaryNetwork } from "../../network";
-import { getNetworkError } from "../../networkEvaluate";
+import { evaluateNetworkWrapper } from "../../evaluateNetworkHelper";
 import { TrainData } from "../../types";
 
 interface Args {
@@ -20,7 +20,7 @@ export async function getTopPerformers(args: Args) {
   const promises = args.networks.map(
     (network) =>
       new Promise<number>((res) => {
-        const error = getNetworkError(network, args.trainData.data);
+        const error = evaluateNetworkWrapper(network, args.trainData.data);
         res(error);
       }),
   );

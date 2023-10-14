@@ -8,7 +8,7 @@ import { TestData } from "./types";
  * @returns
  */
 
-export function networkError(testData: TestData[], network: BinaryNetwork) {
+export function evaluateNetwork(testData: TestData[], network: BinaryNetwork) {
   let score = 0;
   // The maximum score is: maxScore of one test * count of all tests
   // The max score in each test is identical as they have the same size
@@ -18,15 +18,15 @@ export function networkError(testData: TestData[], network: BinaryNetwork) {
   // For each test...
   for (let testIndex = 0; testIndex < tests; testIndex++) {
     const test = testData[testIndex];
-    let result = networkEvaluateInput(network, test);
-    score += evaluateTest(test, result[0]);
+    let result = applyAndTestNetworkWithData(network, test);
+    score += scoreTest(test, result[0]);
   }
 
   // console.log(score, maxScore)
   return fitnessScore(score, maxScore);
 }
 
-function evaluateTest(test: TestData, result: boolean) {
+function scoreTest(test: TestData, result: boolean) {
   let score = 0;
   let proximity = test[1];
   // The test has a score of zero
@@ -52,22 +52,25 @@ function evaluateTest(test: TestData, result: boolean) {
  * @param testData The test data to use
  * @returns An array representing the result of the output nodes
  */
-function networkEvaluateInput(network: BinaryNetwork, testData: TestData) {
+function applyAndTestNetworkWithData(
+  network: BinaryNetwork,
+  testData: TestData,
+) {
   // Set the inputs
   network.setInputs(testData[0]);
-  network.evaluateNetwork();
+  network.run();
 
   // Collect the outputs
   let result = network.OutputNodes.map((node) => node.value);
   return result;
 }
 
-export function getNetworkError(
+export function evaluateNetworkWrapper(
   network: BinaryNetwork,
   data: TestData[],
   verbose = false,
 ) {
-  return networkError(data, network);
+  return evaluateNetwork(data, network);
 }
 function fitnessScore(score: number, maxScore: number) {
   return score;

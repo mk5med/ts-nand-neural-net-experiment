@@ -131,7 +131,7 @@ export class BinaryNetwork {
    * @param startLayer The layer to start at. Defaults to 1
    * @returns
    */
-  evaluateNetwork(startLayer = 1) {
+  run(startLayer = 1) {
     //// Check the startLayer is in bounds
     if (startLayer <= 0) {
       throw new Error("Start layers less than 1 are unsupported.");

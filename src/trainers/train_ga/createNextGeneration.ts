@@ -34,7 +34,7 @@ export function createNextGeneration(args: CreateNextGenerationArgs) {
   );
 
   // Insert the top performers into the network for the next generation
-  // for (let i = 0; i < 1; i++) networks[i] = args.topPerformers[i];
+  for (let i = 0; i < 1; i++) networks[i] = args.topPerformers[i];
 
   return networks;
 }
@@ -50,13 +50,19 @@ export function generateGenerationWithCommonCoefficients(
     // Compute
     let deviation = coefficientsToNumber(data);
     const len = deviation.toString(2).padStart(coefficientCount, "0").length;
+
+    // Randomize deviation sizes
+    const minDivisions = 1;
+    const maxDivisions = len;
+    const divisions =
+      minDivisions + Math.floor(Math.random() * (maxDivisions - minDivisions));
     deviation = selectSliceFromBigInt(
       deviation,
-      Math.floor(Math.random() * 20),
-      Math.floor(len / 20),
+      Math.floor(Math.random() * divisions),
+      Math.floor(len / divisions),
     );
 
-    const randomFromCommonSelections = [2, 4, 8, 16];
+    const randomFromCommonSelections = [len, 2, 4, 8, 16];
     const randomFromCommon = Math.floor(
       Math.random() * randomFromCommonSelections.length,
     );

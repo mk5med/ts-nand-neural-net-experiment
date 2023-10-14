@@ -4,7 +4,7 @@ import { generateRandomCoefficients } from "./generateCoefficients";
 import { evaluateGeneration } from "./evaluateGeneration";
 import { spawnGeneration } from "./spawnGeneration";
 
-interface TrainArgs {
+export interface TrainArgs {
   trainData: TrainData;
   population_size?: number;
   maxGenerations?: number;
@@ -17,7 +17,7 @@ export async function train({
   population_size = 10,
   maxGenerations = -1,
   error_epsilon = 0,
-  isAtLocalMinimumThreshold = 10000,
+  isAtLocalMinimumThreshold = -1,
   ...args
 }: TrainArgs) {
   // The total number of connections (coefficients)
@@ -51,6 +51,7 @@ export async function train({
       `Generation ${count_generations} with error`,
       bestError,
       vals.newError,
+      // vals.topPerformers[0].coefficients
     );
     networks = vals.newNetworks;
     topPerformers = vals.topPerformers;
@@ -72,7 +73,7 @@ export async function train({
     else {
       errorHasNotImprovedCount = 0;
       bestError = vals.newError;
-      break;
+      // break;
     }
 
     // Exit if the error of the model is close to the accepted error rate
