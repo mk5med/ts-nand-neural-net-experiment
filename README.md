@@ -24,6 +24,11 @@ Layers: 0, 1, 2, 3
 (i2) - |                 | - |                |
 ```
 
+## Procedure
+1. Train a neural net for classification tasks.
+2. Lossy conversion of the neural net weights to binary algebraic expression.
+3. Solve for the NAND circuit.
+
 ## Getting started
 
 1. Install `yarn` with `npm i -g yarn`.
